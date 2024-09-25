@@ -1,0 +1,42 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 2 - Assignment 2
+## Black, Tyler
+### Introduction to R Markdown
+
+
+This document serves as an introduction to R Markdown. The R code in the 
+following document will cover R data types, graphs, and common packages. The 
+code produced here was introduced in an earlier assignment. 
+
+
+The code underneath this paragraph plots two vectors, sales on the x-axis and
+month on the y-axis using the package tidyverse and the function qplot.
+
+
+```{r Plot of Sales by Month}
+library(ggplot2)
+library(tidyverse)
+sales <- c(50,150,200,100,300,250)
+month <- c(1,2,3,4,5,6)
+qplot(month,sales)
+```
+
+What month had the largest sales? What was the amount? -> Month 5 and 300
+
+```{r Working with Data Frames}
+months <- c('Jan','Feb','Mar', 'Apr', 'May','Jun','Jul','Aug','Sep','Oct','Nov',
+            'Dec')
+month <- months
+sales <- c(150.25, 258.54, 268.55, 122.52, 987, 458.82, 667.23, 845.54, 586.78, 
+           888.58, 756.12, 456.84)
+Yearly_Sales <- data.frame(month,sales)
+qplot(Yearly_Sales$sales, Yearly_Sales$month)
+```
+
+Which month had the most sales? May       
+Which month had the least sales? April
+

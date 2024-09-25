@@ -1,0 +1,74 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 3 - Assignment 2
+## Black, Tyler
+### Exploratory Data Analysis
+
+```{r load Tidyverse}
+library(tidyverse)
+```
+
+#### Diamond Color and Price
+```{r Scatter Plot carat vs price}
+ggplot(data=diamonds, aes(x=carat,y=price)) +
+  geom_point()
+```
+
+1.) What do you notice from the scatterplot as the carat size increases?  
+**When the carat size increases, the price also increases. However, after a certain carat size, 
+the price isn't as dependent on the carat size**
+
+2.) From the scatterplot, what carats are most represented within the diamonds dataset?   
+**Most of the diamonds are between the .5 to 2.5 carat size per the scatter plot**
+
+```{r Scatter Plot color vs. price}
+ggplot(data=diamonds, aes(x=color,y=price)) + 
+  geom_point()
+```
+
+Do you see any difference based solely on color? **I do not**
+
+```{r Color Classes added}
+ggplot(data=diamonds, aes(x=carat,y=price,color=color)) +
+  geom_point()
+```
+
+1.) Does color impact the price?  
+**Yes, color impacts price. A diamond can have a low carat size, but have the best
+color ('D') and be just as expensive as the diamonds with the biggest carat size. However, if a diamond has
+a big carat size, it can offset the diamond having the worst color ('J') and be as expensive as diamonds with
+better colors**
+
+2.) Are certain colors associated with carat size? Provide an example.   
+**The best color diamonds (‘D’) seem to be associated with a low carat size. For example, diamonds with color
+('D') and a carat size of 1 have many observations in the $15,000 price range. 
+In contrast, the worst color diamonds (‘J’) seem to be associated with a bigger carat size. There are a few observations of diamonds with the worst color ('J') and a carat size of over 4 in the price range of over $15,000.** 
+
+```{r Random Set}
+dsample <- diamonds[sample(nrow(diamonds), 100), ]
+ggplot(data=dsample, aes(x=carat,y=price,color=color)) +
+  geom_point() +
+  geom_smooth()
+```
+
+**PLEASE UPDATE IN .DOCX - DR.CUMMINGS IGNORE THIS LINE**  
+
+**I think this chunk of code is harder to analyze than when using the entire data set.
+Additionally, certain colors or a non-representative number of observations of each color class may be
+chosen since the sample is random and only 100 observations.**
+
+
+#### Additional Plots/Graphs
+```{r Histograms}
+ggplot(data=diamonds,aes(x=price, color = color)) +
+  geom_histogram(binwidth = 250)
+
+ggplot(data=diamonds,aes(x=carat, color = color)) +
+  geom_histogram(binwidth = .5)
+```
+
+**I think these histograms do a great job of showing the distribution of diamond colors per carat size
+and price. These histograms provide great evidence for the conclusions purported earlier**

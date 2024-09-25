@@ -1,0 +1,71 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 3 - Assignment 1
+
+## Black, Tyler
+
+### Data Visualization
+
+In this assignment, we will be using the candy_data and candy_production data sets
+to produce different graphs, including a scatter plot, line graph, and bar graph. 
+
+```{r Loading Datasets}
+library(tidyverse)
+library(readr)
+candy_data <- read_csv("candy_data.csv")
+candy_production <- read_csv("candy_production.csv", 
+    col_types = cols(observation_date = col_date(format = "%Y-%m-%d")))
+```
+#### Visualization with Scatterplots (geom_point)
+```{r}
+ggplot(data = candy_data,aes(x=sugarpercent,y=pricepercent,label=competitorname)) +
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  geom_text(check_overlap = T,# automatically reduce overlap (deletes some labels)
+  vjust = "bottom", # adjust the vertical orientation
+  nudge_y = 0.01, # move the text up a bit so it doesn't touch the points
+  angle = 30,# tilt the text 30 degrees
+  size = 2 # make the text smaller (to reduce overlap more)
+  ) + # and then add labels to the points# 
+  labs(title = "Sugar by Price Scatterplot", # plot title
+  x = "Sugar content (percentile)", # x axis label
+  y = "Price (percentile)" # y axis label
+  )
+
+```
+
+
+It looks like Reese's stuffed with pieces is the most sugary candy with the lowest cost.
+Reese's stuffed with pieces is the most sugary candy there is, but other candies are more expensive.  
+Nestle Smarties is the most expensive candy with the most sugar. There are other candies that have more
+sugar but they cost less. 
+
+
+#### Line Chart of Candy Production
+```{r Line Graph}
+ggplot(data=candy_production, aes(x=observation_date,y=IPG3113N)) +
+  geom_line() +
+  geom_smooth() +
+  labs(title = "Monthly Candy Production", # plot title
+  x = "Year", # x axis label
+  y = " As percent of 2012 production" # y axis label
+  )
+```
+
+#### Bar Chart of Ingredients
+```{r Bar Chart}
+ggplot(data=candy_data,aes(x=chocolate)) +
+  geom_bar()
+
+# select out the columns that have the features of the candy (chocolate, caramel, etc.)
+candyFeatures <- candy_data %>% select(2:10)
+# make sure that these are booleans (logical)
+candyFeatures[] <- lapply(candyFeatures, as.logical)
+
+ggplot(data=candyFeatures,aes(x=chocolate)) +
+  geom_bar()
+```
+

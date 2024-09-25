@@ -1,0 +1,67 @@
+# Module 5 - Assignment 2
+## Black, Tyler
+### More Data Wrangling
+
+```{r Tidyverse and Data Import}
+library(tidyverse)
+tuition_cost <- read_csv("tuition_cost.csv")
+```
+### Part 1 – Creating tidy data using tidyr
+
+```{r Creating Tidy}
+Tuition <- pivot_longer(tuition_cost,cols = '2017':'2020',names_to = 'Year',values_to = 'Tuition')
+
+Tuition <- separate(Tuition,col='Tuition',into= c('InState','OutState'), sep = '/')
+
+Tuition$Year <- as.numeric(Tuition$Year)
+Tuition$InState<-as.numeric(Tuition$InState)
+Tuition$OutState<-as.numeric(Tuition$OutState)
+```
+
+### Part 2 – North Carolina Schools
+
+```{r Subset on NC}
+Public <- filter(Tuition, state == 'North Carolina' & type == 'Public' & degree_length ==
+                   '4 Year')
+
+ggplot(data=Public,mapping = aes(x=Year,y=InState, color = name)) +
+  geom_point() +
+  labs(title = 'In-State Tuition for North Carolina Schools', y= 'Cost in $') +
+  scale_color_discrete(name = NULL)
+
+UNC <- filter(Public,grepl("University of North Carolina",name))
+
+ggplot(data=UNC,mapping = aes(x=Year,y=InState, color = name)) +
+  geom_point() +
+  labs(title = 'In-State Tuition for UNC Schools', y= 'Cost in $') +
+  scale_color_discrete(name = NULL) +
+  theme(legend.position="bottom") +
+  guides(colour = guide_legend(nrow = 4))
+```
+
+
+### Part 3 – Additional Universities
+
+```{r Colorado and SC}
+Colorado_Out <- filter(Tuition, state == 'Colorado' & type == 'Public' 
+                   & degree_length == '4 Year')
+
+SC_IN <- filter(Tuition, state == 'South Carolina' & type == 'Public' 
+                   & degree_length == '2 Year')
+
+
+ggplot(data=Colorado_Out,mapping = aes(x=Year,y=OutState, color = name)) +
+  geom_point() +
+  labs(title = 'Out-State Tuition for Colorado Schools', y= 'Cost in $') +
+  scale_color_discrete(name = NULL) +
+  theme(legend.position="bottom") +
+  guides(colour = guide_legend(nrow = 7))
+
+ggplot(data=SC_IN,mapping = aes(x=Year,y=InState, color = name)) +
+  geom_point() +
+  labs(title = 'In-State Tuition for South Carolina Schools', y= 'Cost in $') +
+  scale_color_discrete(name = NULL) +
+  theme(legend.position="bottom")  +
+  guides(colour = guide_legend(nrow = 10))
+```
+

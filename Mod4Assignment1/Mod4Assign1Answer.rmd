@@ -1,0 +1,91 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 4 - Assignment 1
+## Black, Tyler
+### Data Transformation
+
+```{r TidyVerse and Loading Dataset}
+library(tidyverse)
+state_income <- read_csv("state_income.csv")
+```
+#### State Incomes
+
+Subsets will be created from the state_income database. Different variables and
+conditions will be used. Variables will also be renamed. A subset for just North
+Carolina data will be created. 
+
+```{r Select}
+state_income2 <- select(state_income,State_Name, State_ab, County, City,
+                        Type, ALand, Mean, Median, Stdev)
+State_ab <- select(state_income2,State_ab,everything())
+head(State_ab, n = 10)
+```
+```{r Rename}
+state_income2 <- rename(state_income2,SquareArea = ALand, IncomeMean = Mean, 
+                        IncomeMedian = Median, IncomeStdev = Stdev)
+head(state_income2,n = 10)
+```
+```{r Filter}
+NC_Income <- filter(state_income2,State_Name == 'North Carolina')
+head(NC_Income, n =10)
+```
+
+#### NC Income  
+
+The data set created earlier for just North Carolina data will be used to create
+income summaries by county, city, and type. 
+
+```{r Arrange}
+NC_Income <- arrange(NC_Income,County)
+head(NC_Income,n=10)
+```
+```{r Summary}
+summary1 <- group_by(NC_Income,County)
+summary1 <- summarise (summary1, mean= mean(IncomeMean))
+
+summary2 <- NC_Income %>%
+group_by(City) %>%
+summarise (mean = mean(IncomeMean))
+```
+The summary1 data set groups the mean state incomes for North Carolina by county.    
+Wake County has the highest mean state income.   
+The summary2 data set groups the mean state incomes for North Carolina by city.
+Davidson has the highest mean state income.
+
+```{r Summary 3}
+summary3 <- NC_Income %>%
+group_by(Type) %>%
+summarise (mean = mean(IncomeMean))
+```
+
+#### Income Visualization
+```{r GGplot}
+ggplot(data = summary1, aes(x=County,y=mean)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90,vjust =0.5, hjust=1)) +
+  labs(title = 'Income By County',y= 'Income')
+```
+
+Within the R Markdown document, create a new paragraph that states which county has the largest average
+income and which county has the lowest average income. Which has the second lowest income?  
+**Wake County has the largest income while Stokes County has the lowest and Surry County had the
+second to lowest**
+
+```{r Average on AB}
+AvgStateIncome <- state_income2 %>%
+group_by(State_ab) %>%
+summarise (mean = mean(IncomeMean))
+
+AvgStateIncome <- filter(AvgStateIncome, grepl('N',State_ab))
+
+ggplot(data=AvgStateIncome,aes(x=State_ab, y = mean)) +
+  geom_point() +
+  labs(title = 'Average Income for "N" Abbreivated States', x= 'State Abbreviation',
+       y = 'Income')
+```
+
+**TN had the lowest average State Income while NJ had the largest State Income.** 
+

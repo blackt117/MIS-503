@@ -1,0 +1,79 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+# Module 3 - Assignment 3
+## Black, Tyler
+### More Practice with Plots
+
+```{r Load Tidyverse and Google Dataset}
+library(tidyverse)
+library(readr)
+GOOG <- read_csv("GOOG.csv", col_types = cols(Date = col_date(format = "%Y-%m-%d")))
+```
+#### Google Stock Price Plots
+The following is an analysis of Google’s stock price from October of 2019 to October of 2020. This will
+include a scatter, line, bar, histogram and boxplot. All the plots represent the closing price on the dates
+listed on the x-axis.
+
+```{r Basic Plots}
+ggplot(data=GOOG,aes(x=Date,y=Close)) +
+  geom_point()
+
+ggplot(data=GOOG,aes(x=Date,y=Close)) +
+  geom_line()
+
+ggplot(data=GOOG,aes(x=Date, y= Close)) +
+  geom_col()
+
+ggplot(data=GOOG,aes(x=Close)) +
+  geom_histogram(binwidth = 75)
+
+ggplot(data=GOOG,aes(x=Close)) +
+  geom_boxplot()
+
+ggplot(data=GOOG,aes(x=Date,y=Close)) +
+  geom_line() +
+  geom_point()
+```
+
+You have created many different plots of the same data but some are more helpful than others. Based on
+the plots you created, which one do you find most useful and why?   
+**I find the line graph with the points included to be the most useful since the data is continuous and
+the graph helps illustrate the continuous trend of closing stock prices during the time frame. Additionally,
+I think the histogram is quite useful since histograms portray continuous data quite well**
+
+#### Google Stock Daily Price Comparisons
+For the next section, we will be comparing the open/close prices as well as the high/low prices within the
+GOOG dataset.
+
+```{r Advanced Plot}
+ggplot(GOOG) +
+  geom_line(aes(x=Date,y=High,color = 'High')) +
+  geom_line(aes(x=Date,y=Low,color = 'Low'))
+
+ggplot(GOOG) +
+  geom_line(aes(x=Date,y=Close,color = 'Close')) +
+  geom_line(aes(x=Date,y=Open,color = 'Open'))
+
+ggplot(GOOG,aes(x=Date,y=Close)) +
+  geom_area(color = 'black', fill = 'blue',alpha = .2)
+
+ggplot(GOOG,aes(x=Date,y=Open)) +
+  geom_area(color = 'blue', fill = 'green',alpha = .10)
+
+MayPrice = subset(GOOG,Date > '2020-04-30' & Date < '2020-06-01')
+
+ggplot(data= MayPrice, aes(x=Date, y= Close)) +
+  geom_point() +
+  geom_text(aes(label = round(Close)), size = 3, vjust = -1)
+
+AprilPrice = subset(GOOG,Date > '2020-03-31' & Date < '2020-05-01')
+
+ggplot(data= AprilPrice, aes(x=Date, y= Open)) +
+  geom_point() +
+  geom_text(aes(label = round(Open)), size = 2, vjust = 1.5)
+```
+

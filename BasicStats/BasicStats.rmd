@@ -1,0 +1,34 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+# Homework Module 3
+## Tyler Black
+## Due Date: 17-07-2024   
+
+
+### Loading dataset and doing Summary Statistics   
+
+```{r}
+library(tidyverse)
+library(readr)
+diamonds_updated <- read_csv("diamonds_updated.csv")
+summary(diamonds_updated)
+```
+
+
+### Correlation Analysis   
+
+```{r}
+cor(diamonds_updated,use = 'complete.obs',method="pearson")
+cov(diamonds_updated,use = 'complete.obs',method = 'pearson')
+```
+### Linear Regression   
+
+```{r}
+model <- lm(PRICE ~ CLARITY + COLOR + WEIGHT, data = diamonds_updated)
+summary(model)
+vcov(model)
+```

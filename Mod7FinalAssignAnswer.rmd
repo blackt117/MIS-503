@@ -1,0 +1,170 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# MIS503 – Final Project
+## Black, Tyler 
+### Zillow Home Value Index Analysis
+
+```{r Loading Packages and Datasets}
+library(tidyverse)
+SingleFamilyResidenceRental <- read_csv("SingleFamilyResidenceRental.csv")
+SingleFamilyResidenceSales <- read_csv("SingleFamilyResidenceSales.csv")
+```
+### Wake County Home Sales
+
+```{r Wake County}
+WakeCountySales <- SingleFamilyResidenceSales %>%
+  filter( CountyName == 'Wake County' & State == 'NC') %>%
+  select(RegionID,RegionName,CountyName, Metro, '5/31/2013', '5/31/2014', '5/31/2015',
+        '5/31/2016', '5/31/2017', '5/31/2018', '5/31/2019', '5/31/2020', '5/31/2021',
+        '5/31/2022', '5/31/2023') %>%
+  rename('2013' = '5/31/2013', '2014' = '5/31/2014', '2015' = '5/31/2015',
+        '2016' = '5/31/2016', '2017' = '5/31/2017', '2018' = '5/31/2018', 
+        '2019' ='5/31/2019', '2020' = '5/31/2020', '2021' ='5/31/2021',
+        '2022' = '5/31/2022', '2023' = '5/31/2023') %>%
+  pivot_longer(cols = '2013':'2023', names_to = 'YR', values_to = 'ZHVI')
+
+ggplot(data = WakeCountySales, mapping = aes( x=YR ,y = ZHVI, color = RegionName)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5)) +
+  scale_y_continuous(name="Home Values (in $)", labels = scales::comma) +
+  labs(title = 'Wake County Home Sales', x = "Year")
+
+ggplot(data = WakeCountySales, mapping = aes( x=YR ,y = ZHVI, color = RegionName)) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5)) +
+  scale_y_continuous(name="Home Values (in $)", labels = scales::comma) +
+  labs(title = 'Wake County Home Sales', x = "Year")
+```
+
+a. What have been the overall trends in Wake County Home Values?  
+**They have increased over the years, with a slight decrease in 2023**
+b. There were dips in home values in the past 10 years. What years did these occur?  
+**Looks like the only dip is from 2022 to 2023**
+c. Based on the analysis, where would be the least expensive area to purchase home? Most expensive area?   
+**Most expensive is Cary and the least expensive is Zebulon** 
+d. What has happened to the overall property values in Apex and Cary in 2023?   
+**They have decreased** 
+
+
+### NC Rental Market
+
+```{r NC Rental Market}
+Rentals <- SingleFamilyResidenceRental %>%
+          filter(RegionName %in% c('Asheville', 'Charlotte', 'Durham', 
+                                    'Fayetteville', 'Raleigh', 'Wilmington') & 
+                   State == 'NC') %>%
+          select(RegionName, State, '1/31/2015', '1/31/2016', '1/31/2017', '1/31/2018',
+                 '1/31/2019', '1/31/2020', '1/31/2021', '1/31/2022', '1/31/2023') %>%
+          rename('2015' = '1/31/2015', '2016' = '1/31/2016', '2017' = '1/31/2017', 
+                 '2018' = '1/31/2018', '2019' = '1/31/2019', '2020' = '1/31/2020', 
+                 '2021' = '1/31/2021', '2022' = '1/31/2022', '2023' = '1/31/2023') %>%
+          pivot_longer(cols = '2015':'2023', names_to = 'YR', values_to = 'ZHVI')
+
+
+ggplot(data = Rentals, mapping = aes( x=YR ,y = ZHVI, color = RegionName)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5)) +
+  scale_y_continuous(name="Average Rental Cost ($)", labels = scales::comma) +
+  labs(title = 'Rental Costs in NC Cities', x = "Year")
+
+ggplot(data = Rentals, mapping = aes( x=YR ,y = ZHVI, color = RegionName)) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5)) +
+  scale_y_continuous(name="Average Rental Cost ($)", labels = scales::comma) +
+  labs(title = 'Rental Costs in NC Cities', x = "Year")
+```
+
+a. What has been the overall trend in the rental market around the state? Are there any cities that have not followed this trend?   
+**The prices have increased over the years, doesn't seem like any city hasn't followed this trend**
+b. Where is the most expensive city to rent in? Least expensive?    
+**The most expensive is Asheville and the least expensive is Fayetteville**
+c. You are trying to decide between Wilmington and Asheville. Which market has the lowest rent?   
+**Wilmington has a lower rent than Asheville**
+
+### Home Values in Select Markets
+```{r Select Market}
+NCHomeSales <- SingleFamilyResidenceSales %>%
+  filter( Metro %in% c('Asheville', 'Charlotte-Concord-Gastonia', 'Raleigh-Cary', 'Wilmington') 
+          & State == 'NC') %>%
+  select(RegionName,State, Metro, '5/31/2013', '5/31/2014', '5/31/2015',
+        '5/31/2016', '5/31/2017', '5/31/2018', '5/31/2019', '5/31/2020', '5/31/2021',
+        '5/31/2022', '5/31/2023') %>%
+  rename('2013' = '5/31/2013', '2014' = '5/31/2014', '2015' = '5/31/2015',
+        '2016' = '5/31/2016', '2017' = '5/31/2017', '2018' = '5/31/2018', 
+        '2019' ='5/31/2019', '2020' = '5/31/2020', '2021' ='5/31/2021',
+        '2022' = '5/31/2022', '2023' = '5/31/2023') %>%
+  pivot_longer(cols = '2013':'2023', names_to = 'YR', values_to = 'ZHVI') %>%
+  filter(!is.na(ZHVI)) %>%
+  group_by(Metro) 
+  
+
+ggplot(data = NCHomeSales, mapping = aes(x=Metro, y= ZHVI)) +
+  geom_violin() + 
+  geom_boxplot(width = .1) +
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6, suffix = 'M')) +
+  labs(y = 'Home Values in ($)') 
+
+NCHomeSales2 <- NCHomeSales %>%
+  group_by(Metro) %>%
+  summarise(median = median(ZHVI))
+```
+
+a. According to the results, which market has the lowest median price (represented as horizontal bar in box plot)?    
+**Looks like Charlotte-Concord-Gastonia, but Raleigh-Cary is very close**
+b. The violin plot will show density meaning the wider the plot is, the more observations occur within that area. Which market has the most density around the median value of homes?   
+**I would say Asheville, but someone could argue Raleigh-Cary**
+c. The box plot will also show outliers in the various markets. Which metro area had the largest outlier (i.e., the highest value home sold in the past 10 years)?  
+**Wilmington had the largest outlier**
+
+
+### Relocation Home Value Comparison
+```{r Relocation Analysis}
+NationalHomeSales <- SingleFamilyResidenceSales %>%
+  filter(RegionName %in% c('Chicago', 'New York', 'Denver', 'Houston') 
+          & CountyName %in% c('Queens County', 'Denver County', 'Cook County', 'Harris County')) %>%
+  select(RegionName,State, CountyName, Metro, '5/31/2013', '5/31/2014', '5/31/2015',
+        '5/31/2016', '5/31/2017', '5/31/2018', '5/31/2019', '5/31/2020', '5/31/2021',
+        '5/31/2022', '5/31/2023') %>%
+  rename('2013' = '5/31/2013', '2014' = '5/31/2014', '2015' = '5/31/2015',
+        '2016' = '5/31/2016', '2017' = '5/31/2017', '2018' = '5/31/2018', 
+        '2019' ='5/31/2019', '2020' = '5/31/2020', '2021' ='5/31/2021',
+        '2022' = '5/31/2022', '2023' = '5/31/2023') %>%
+  pivot_longer(cols = '2013':'2023', names_to = 'YR', values_to = 'ZHVI') %>%
+  filter(!is.na(ZHVI))
+
+ggplot(data = NationalHomeSales, mapping = aes( x=YR ,y = ZHVI)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust=0.5)) +
+  scale_y_continuous(name="Home Values ($)", labels = scales::comma) + 
+  facet_wrap(~Metro)
+```
+
+a. Based on your analysis, which city’s housing is most affordable? Least affordable?   
+**The most affordable city is Houston and the least affordable is New York**
+b. Which cities saw the largest change in prices over the past 5 years? Which city has remained more consistent (i.e., no huge swings up or down in home values)?   
+**You could argue that either New York or Denver has had the largest price change over the past five years, but Denver seems to have the most within the the more recent years. Chicago seems the most consistent in home prices, but Houston is not too far behind**
+c. Which cities saw a decline in value during 2023 and which cities remained consistent?   
+**Every city but Houston saw a decline in value during 2023**
+
+
+### Future Home Values
+
+```{r Future Sales}
+Projections <- read_csv("Projections.csv")
+FutureHomeValues <- Projections %>%
+  filter(RegionName %in% c('Chicago, IL', 'Denver, CO', 'Houston, TX', 'New York, NY')) %>%
+  select(RegionName, '2024-07-31', '2024-09-30', '2025-06-30') %>%
+  rename('Current' = '2024-07-31', 'ThreeMonths' = '2024-09-30', 'TwelveMonths' = '2025-06-30') %>%
+  pivot_longer(cols = 'Current':'TwelveMonths', names_to = 'Time', values_to = 'Percentage Change')
+
+ggplot(data=FutureHomeValues, mapping = aes(x=Time,y=`Percentage Change`, color = RegionName)) +
+  geom_point()
+```
+
+a. Which is the only city that is projected to have a decrease in home values in the next 3 months?   
+**Every city is expected to have a decrease in home values in the next 3 months**
+b. If you are only concerned about the largest home value increase (by percentage) in the next 12 months, which city would you choose to relocate to?   
+**New York is predicted to have the largest home value decrease in the next twelve months, so I would move there if I were concerned with a home value increase. However, if for some reason, I wanted to move to a city with the "largest' home value 'increase', I would move to Houston since it is seeing the lowest home value decrease in the next twelve months.**

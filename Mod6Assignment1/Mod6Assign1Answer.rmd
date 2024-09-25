@@ -1,0 +1,64 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# Module 6 - Assignment 1
+## Black, Tyler
+### Lubridate
+
+```{r Loading Packages}
+library(tidyverse)
+library(lubridate)
+Appointments <- read_csv("Appointments.csv")
+```
+### Working with Dates
+
+```{r Formatting for Dates}
+Appointments <- mutate(Appointments, ReservationYear = 2019)
+Appointments <- mutate(Appointments, ReservationDate =
+                       make_date (month=ReservationMonth, day=ReservationDay, year= ReservationYear))
+Appointments <- mutate(Appointments, CreationDate =
+                       make_date (month=CreationMonth, day=CreationDay, year= CreationYear))
+
+Appointments <- mutate(Appointments, ReservationSpan = ReservationDate - CreationDate)
+```
+
+### Exploratory Analysis
+```{r Exploratory Analysis}
+summary(Appointments)
+Appointments <- mutate(Appointments, ReservationSpan = as.numeric(ReservationSpan))
+summary(Appointments)
+```
+
+a. What is the average time between appointment creation and the actual reservation date?  
+**38.53 days**
+b. What was the max time?   
+**207 days**
+c. What was the min time?    
+**1 day**
+
+```{r Correlation Analysis}
+Appointments_Cor <- select(Appointments, ReservationSpan, Show)
+cor(x=Appointments_Cor, use = 'everything', method = 'pearson')
+cor(x=Appointments$ReservationSpan, y= Appointments$Show, use = 'everything', method = 'pearson')
+```
+a. Are ReservationSpan and Show highly correlated?     
+**No, the data suggests they are independent of one another**
+
+
+
+
+
+```{r Bar Chart}
+ggplot(data=Appointments,mapping = aes(x=Show)) +
+  geom_bar() +
+  labs(title = 'Number of No Shows', x = '0 = No Show; 1 = Show')
+```
+
+a. Based on 0 being “no show” and 1 being “show”, did most people make their appointments?     
+ **Most of the patients made their appointments**
+ 
+ 
+ 
+ 
